@@ -1,0 +1,170 @@
+@startuml
+title Rede Social - UML MR 
+
+' ==== Entidades principais ====
+entity "Utilizador" as Utilizador {
+  *idUtilizador : INT
+  nome : VARCHAR(100)
+  email : VARCHAR(100)
+  senha : VARCHAR(100)
+  dataNascimento : DATE
+  genero : VARCHAR(20)
+}
+
+entity "Perfil" as Perfil {
+  *idPerfil : INT
+  biografia : TEXT
+  avatarUrl : VARCHAR(255)
+  idUtilizador : INT
+}
+
+entity "Post" as Post {
+  *idPost : INT
+  conteudo : TEXT
+  dataHora : DATETIME
+  idUtilizador : INT
+}
+
+entity "Comentario" as Comentario {
+  *idComentario : INT
+  conteudo : TEXT
+  dataHora : DATETIME
+  idPost : INT
+  idUtilizador : INT
+}
+
+entity "LikePost" as LikePost {
+  *idLike : INT
+  idPost : INT
+  idUtilizador : INT
+}
+
+entity "Amizade" as Amizade {
+  *idAmizade : INT
+  idUtilizador1 : INT
+  idUtilizador2 : INT
+  dataAmizade : DATE
+}
+
+entity "Mensagem" as Mensagem {
+  *idMensagem : INT
+  conteudo : TEXT
+  dataHora : DATETIME
+  idRemetente : INT
+  idDestinatario : INT
+}
+
+entity "Grupo" as Grupo {
+  *idGrupo : INT
+  nome : VARCHAR(100)
+  descricao : TEXT
+  idUtilizadorCriador : INT
+}
+
+entity "GrupoMembro" as GrupoMembro {
+  *idRelacao : INT
+  idGrupo : INT
+  idUtilizador : INT
+  dataEntrada : DATE
+}
+
+entity "Evento" as Evento {
+  *idEvento : INT
+  nome : VARCHAR(100)
+  descricao : TEXT
+  dataInicio : DATETIME
+  dataFim : DATETIME
+  idUtilizadorCriador : INT
+}
+
+entity "EventoParticipante" as EventoParticipante {
+  *idRelacao : INT
+  idEvento : INT
+  idUtilizador : INT
+}
+
+entity "Pagina" as Pagina {
+  *idPagina : INT
+  nome : VARCHAR(100)
+  descricao : TEXT
+  idUtilizadorCriador : INT
+}
+
+entity "SeguidoresPagina" as SeguidoresPagina {
+  *idRelacao : INT
+  idPagina : INT
+  idUtilizador : INT
+}
+
+entity "Tag" as Tag {
+  *idTag : INT
+  nome : VARCHAR(50)
+}
+
+entity "PostTag" as PostTag {
+  *idRelacao : INT
+  idPost : INT
+  idTag : INT
+}
+
+entity "Notificacao" as Notificacao {
+  *idNotificacao : INT
+  texto : TEXT
+  dataHora : DATETIME
+  idUtilizador : INT
+  idEvento : INT
+}
+
+entity "Publicidade" as Publicidade {
+  *idPublicidade : INT
+  titulo : VARCHAR(100)
+  conteudo : TEXT
+  dataInicio : DATETIME
+  dataFim : DATETIME
+}
+
+entity "PublicidadeVisualizacao" as PublicidadeVisualizacao {
+  *idRelacao : INT
+  idPublicidade : INT
+  idUtilizador : INT
+  dataHora : DATETIME
+}
+
+entity "HistoricoAcesso" as HistoricoAcesso {
+  *idHistorico : INT
+  idUtilizador : INT
+  dataHora : DATETIME
+  ip : VARCHAR(50)
+}
+
+' ==== Relações 1:N / N:1 ====
+Utilizador ||--o{ Perfil
+Utilizador ||--o{ Post
+Post ||--o{ Comentario
+Utilizador ||--o{ Comentario
+Post ||--o{ LikePost
+Utilizador ||--o{ LikePost
+Utilizador ||--o{ Mensagem 
+Utilizador ||--o{ Mensagem 
+Utilizador ||--o{ Grupo 
+Grupo ||--o{ GrupoMembro
+Utilizador ||--o{ GrupoMembro
+Utilizador ||--o{ Evento 
+Evento ||--o{ EventoParticipante
+Utilizador ||--o{ EventoParticipante
+Utilizador ||--o{ Pagina 
+Pagina ||--o{ SeguidoresPagina
+Utilizador ||--o{ SeguidoresPagina
+Post ||--o{ PostTag
+Tag ||--o{ PostTag
+Utilizador ||--o{ Notificacao
+Evento ||--o{ Notificacao
+Publicidade ||--o{ PublicidadeVisualizacao
+Utilizador ||--o{ PublicidadeVisualizacao
+Utilizador ||--o{ HistoricoAcesso
+
+' ==== Relações N:N via tabelas de junção ====
+Utilizador ||--o{ Amizade
+Utilizador ||--o{ Amizade
+
+@enduml

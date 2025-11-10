@@ -1,0 +1,231 @@
+@startuml
+title Sistema de Streaming de Música - UML MR
+
+' ==== Entidades principais ====
+entity "Utilizador" as Utilizador {
+  *idUtilizador : INT
+  nome : VARCHAR(100)
+  email : VARCHAR(100)
+  senha : VARCHAR(100)
+  dataNascimento : DATE
+  plano : VARCHAR(50)
+}
+
+entity "Perfil" as Perfil {
+  *idPerfil : INT
+  nome : VARCHAR(50)
+  idUtilizador : INT
+  preferencias : TEXT
+}
+
+entity "Artista" as Artista {
+  *idArtista : INT
+  nome : VARCHAR(100)
+  generoPrincipal : VARCHAR(50)
+}
+
+entity "Album" as Album {
+  *idAlbum : INT
+  titulo : VARCHAR(100)
+  dataLancamento : DATE
+  idArtista : INT
+}
+
+entity "Musica" as Musica {
+  *idMusica : INT
+  titulo : VARCHAR(100)
+  duracao : TIME
+  idAlbum : INT
+  idArtista : INT
+}
+
+entity "Playlist" as Playlist {
+  *idPlaylist : INT
+  nome : VARCHAR(100)
+  dataCriacao : DATE
+  idPerfil : INT
+  tipo : VARCHAR(20) 'publica, privada, colaborativa
+}
+
+entity "PlaylistMusica" as PlaylistMusica {
+  *idRelacao : INT
+  idPlaylist : INT
+  idMusica : INT
+  ordem : INT
+}
+
+entity "GeneroMusical" as GeneroMusical {
+  *idGenero : INT
+  nome : VARCHAR(50)
+}
+
+entity "MusicaGenero" as MusicaGenero {
+  *idRelacao : INT
+  idMusica : INT
+  idGenero : INT
+}
+
+entity "Assinatura" as Assinatura {
+  *idAssinatura : INT
+  tipoPlano : VARCHAR(50)
+  dataInicio : DATE
+  dataFim : DATE
+  idPerfil : INT
+}
+
+entity "Pagamento" as Pagamento {
+  *idPagamento : INT
+  valor : DECIMAL(10,2)
+  dataPagamento : DATE
+  idAssinatura : INT
+}
+
+entity "Dispositivo" as Dispositivo {
+  *idDispositivo : INT
+  tipo : VARCHAR(50)
+  sistemaOperativo : VARCHAR(50)
+  idPerfil : INT
+}
+
+entity "Reproducao" as Reproducao {
+  *idReproducao : INT
+  dataHora : DATETIME
+  idPerfil : INT
+  idMusica : INT
+  duracaoReproduzida : TIME
+}
+
+entity "Comentario" as Comentario {
+  *idComentario : INT
+  texto : TEXT
+  dataHora : DATETIME
+  idPerfil : INT
+  idMusica : INT
+}
+
+entity "Favorito" as Favorito {
+  *idRelacao : INT
+  idPerfil : INT
+  idMusica : INT
+}
+
+entity "Seguidor" as Seguidor {
+  *idRelacao : INT
+  idPerfil : INT
+  idArtista : INT
+}
+
+entity "Podcast" as Podcast {
+  *idPodcast : INT
+  titulo : VARCHAR(100)
+  descricao : TEXT
+  idArtista : INT
+  dataLancamento : DATE
+}
+
+entity "Episodio" as Episodio {
+  *idEpisodio : INT
+  titulo : VARCHAR(100)
+  duracao : TIME
+  idPodcast : INT
+}
+
+entity "PodcastFavorito" as PodcastFavorito {
+  *idRelacao : INT
+  idPerfil : INT
+  idPodcast : INT
+}
+
+entity "Licenca" as Licenca {
+  *idLicenca : INT
+  tipo : VARCHAR(50)
+  validade : DATE
+  idMusica : INT
+}
+
+entity "HistoricoPlaylist" as HistoricoPlaylist {
+  *idHistorico : INT
+  idPerfil : INT
+  idPlaylist : INT
+  dataAdicao : DATE
+}
+
+entity "LogRecomendacao" as LogRecomendacao {
+  *idLog : INT
+  idPerfil : INT
+  idMusica : INT
+  dataHora : DATETIME
+  motivo : VARCHAR(100)
+}
+
+entity "Tag" as Tag {
+  *idTag : INT
+  nome : VARCHAR(50)
+}
+
+entity "MusicaTag" as MusicaTag {
+  *idRelacao : INT
+  idMusica : INT
+  idTag : INT
+}
+
+entity "CurtidaPodcast" as CurtidaPodcast {
+  *idRelacao : INT
+  idPerfil : INT
+  idEpisodio : INT
+}
+
+entity "ArtistaColaboracao" as ArtistaColaboracao {
+  *idRelacao : INT
+  idArtista : INT
+  idMusica : INT
+}
+
+entity "PremioMusical" as PremioMusical {
+  *idPremio : INT
+  nome : VARCHAR(100)
+  ano : INT
+  idMusica : INT
+}
+
+' ==== Relações 1:N / N:1 ====
+Artista ||--o{ Album
+Artista ||--o{ Musica
+Album ||--o{ Musica
+Perfil ||--o{ Playlist
+Playlist ||--o{ PlaylistMusica
+Perfil ||--o{ Assinatura
+Assinatura ||--o{ Pagamento
+Perfil ||--o{ Dispositivo
+Perfil ||--o{ Reproducao
+Musica ||--o{ Reproducao
+Perfil ||--o{ Comentario
+Musica ||--o{ Comentario
+Perfil ||--o{ HistoricoPlaylist
+Playlist ||--o{ HistoricoPlaylist
+Podcast ||--o{ Episodio
+Perfil ||--o{ CurtidaPodcast
+Musica ||--o{ Licenca
+Musica ||--o{ PremioMusical
+Artista ||--o{ Podcast
+
+' ==== Relações N:N via tabelas de junção ====
+Perfil ||--o{ Favorito
+Musica ||--o{ Favorito
+
+Perfil ||--o{ Seguidor
+Artista ||--o{ Seguidor
+
+Musica ||--o{ MusicaGenero
+GeneroMusical ||--o{ MusicaGenero
+
+Podcast ||--o{ PodcastFavorito
+Perfil ||--o{ PodcastFavorito
+
+Musica ||--o{ MusicaTag
+Tag ||--o{ MusicaTag
+
+Artista ||--o{ ArtistaColaboracao
+Musica ||--o{ ArtistaColaboracao
+
+@enduml

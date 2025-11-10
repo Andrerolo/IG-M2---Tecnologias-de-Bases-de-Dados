@@ -1,0 +1,281 @@
+@startuml
+title Sistema de E-commerce - UML MR Totalmente Ligado (PT-PT)
+
+' ==== Entidades principais ====
+entity "Cliente" as Cliente {
+  *idCliente : INT
+  nome : VARCHAR(100)
+  email : VARCHAR(100)
+  senha : VARCHAR(100)
+  telefone : VARCHAR(20)
+  dataNascimento : DATE
+}
+
+entity "Endereco" as Endereco {
+  *idEndereco : INT
+  rua : VARCHAR(100)
+  cidade : VARCHAR(50)
+  codigoPostal : VARCHAR(10)
+  pais : VARCHAR(50)
+  idCliente : INT
+}
+
+entity "PerfilPagamento" as PerfilPagamento {
+  *idPerfilPagamento : INT
+  tipo : VARCHAR(50)
+  numeroCartao : VARCHAR(20)
+  validade : DATE
+  idCliente : INT
+}
+
+entity "Produto" as Produto {
+  *idProduto : INT
+  nome : VARCHAR(100)
+  descricao : TEXT
+  preco : DECIMAL(10,2)
+  idCategoria : INT
+  idFornecedor : INT
+}
+
+entity "Categoria" as Categoria {
+  *idCategoria : INT
+  nome : VARCHAR(50)
+}
+
+entity "SubCategoria" as SubCategoria {
+  *idSubCategoria : INT
+  nome : VARCHAR(50)
+  idCategoria : INT
+}
+
+entity "Fornecedor" as Fornecedor {
+  *idFornecedor : INT
+  nome : VARCHAR(100)
+  contacto : VARCHAR(50)
+}
+
+entity "Stock" as Stock {
+  *idStock : INT
+  quantidade : INT
+  localizacao : VARCHAR(50)
+  idProduto : INT
+}
+
+entity "Carrinho" as Carrinho {
+  *idCarrinho : INT
+  idCliente : INT
+  dataCriacao : DATE
+}
+
+entity "CarrinhoProduto" as CarrinhoProduto {
+  *idRelacao : INT
+  idCarrinho : INT
+  idProduto : INT
+  quantidade : INT
+}
+
+entity "Encomenda" as Encomenda {
+  *idEncomenda : INT
+  dataEncomenda : DATE
+  estado : VARCHAR(50)
+  idCliente : INT
+  idEndereco : INT
+}
+
+entity "EncomendaProduto" as EncomendaProduto {
+  *idRelacao : INT
+  idEncomenda : INT
+  idProduto : INT
+  quantidade : INT
+  precoUnitario : DECIMAL(10,2)
+}
+
+entity "Pagamento" as Pagamento {
+  *idPagamento : INT
+  valor : DECIMAL(10,2)
+  dataPagamento : DATE
+  metodo : VARCHAR(50)
+  idEncomenda : INT
+  idPerfilPagamento : INT
+}
+
+entity "Cupao" as Cupao {
+  *idCupao : INT
+  codigo : VARCHAR(20)
+  desconto : DECIMAL(5,2)
+  dataValidade : DATE
+  descricao : VARCHAR(100)
+}
+
+entity "CupaoEncomenda" as CupaoEncomenda {
+  *idRelacao : INT
+  idCupao : INT
+  idEncomenda : INT
+}
+
+entity "Promocao" as Promocao {
+  *idPromocao : INT
+  nome : VARCHAR(50)
+  descricao : TEXT
+  dataInicio : DATE
+  dataFim : DATE
+}
+
+entity "ProdutoPromocao" as ProdutoPromocao {
+  *idRelacao : INT
+  idProduto : INT
+  idPromocao : INT
+}
+
+entity "Favorito" as Favorito {
+  *idRelacao : INT
+  idCliente : INT
+  idProduto : INT
+}
+
+entity "AvaliacaoProduto" as AvaliacaoProduto {
+  *idAvaliacao : INT
+  pontuacao : INT
+  comentario : TEXT
+  data : DATE
+  idCliente : INT
+  idProduto : INT
+}
+
+entity "AvaliacaoLoja" as AvaliacaoLoja {
+  *idAvaliacao : INT
+  pontuacao : INT
+  comentario : TEXT
+  data : DATE
+  idCliente : INT
+}
+
+entity "HistoricoTransacao" as HistoricoTransacao {
+  *idHistorico : INT
+  idCliente : INT
+  idEncomenda : INT
+  data : DATE
+  valor : DECIMAL(10,2)
+}
+
+entity "LogAcesso" as LogAcesso {
+  *idLog : INT
+  idCliente : INT
+  dataHora : DATETIME
+  ip : VARCHAR(50)
+}
+
+entity "ListaDesejos" as ListaDesejos {
+  *idLista : INT
+  nome : VARCHAR(50)
+  idCliente : INT
+}
+
+entity "ListaDesejosProduto" as ListaDesejosProduto {
+  *idRelacao : INT
+  idLista : INT
+  idProduto : INT
+}
+
+entity "Entrega" as Entrega {
+  *idEntrega : INT
+  idEncomenda : INT
+  dataEnvio : DATE
+  dataEntregaPrevista : DATE
+  estado : VARCHAR(50)
+  idTransportadora : INT
+}
+
+entity "Transportadora" as Transportadora {
+  *idTransportadora : INT
+  nome : VARCHAR(50)
+  contacto : VARCHAR(50)
+}
+
+entity "CampanhaMarketing" as CampanhaMarketing {
+  *idCampanha : INT
+  nome : VARCHAR(50)
+  descricao : TEXT
+  dataInicio : DATE
+  dataFim : DATE
+}
+
+entity "CampanhaCupao" as CampanhaCupao {
+  *idRelacao : INT
+  idCampanha : INT
+  idCupao : INT
+}
+
+entity "Notificacao" as Notificacao {
+  *idNotificacao : INT
+  texto : TEXT
+  dataHora : DATETIME
+  idCliente : INT
+  idCampanha : INT
+}
+
+entity "ProdutoImagem" as ProdutoImagem {
+  *idImagem : INT
+  url : VARCHAR(255)
+  idProduto : INT
+}
+
+entity "ProdutoTag" as ProdutoTag {
+  *idRelacao : INT
+  idProduto : INT
+  nomeTag : VARCHAR(50)
+}
+
+entity "Devolucao" as Devolucao {
+  *idDevolucao : INT
+  dataPedido : DATE
+  estado : VARCHAR(50)
+  motivo : VARCHAR(255)
+  idEncomenda : INT
+}
+
+' ==== Relações 1:N / N:1 ====
+Cliente ||--o{ Endereco
+Cliente ||--o{ PerfilPagamento
+Cliente ||--o{ Carrinho
+Carrinho ||--o{ CarrinhoProduto
+Cliente ||--o{ Encomenda
+Encomenda ||--o{ EncomendaProduto
+Encomenda ||--o{ Pagamento
+Produto ||--o{ Stock
+Produto ||--o{ EncomendaProduto
+Produto ||--o{ ProdutoPromocao
+Produto ||--o{ AvaliacaoProduto
+Produto ||--o{ ProdutoImagem
+Categoria ||--o{ SubCategoria
+Fornecedor ||--o{ Produto
+Promocao ||--o{ ProdutoPromocao
+Cliente ||--o{ HistoricoTransacao
+Cliente ||--o{ LogAcesso
+Cliente ||--o{ ListaDesejos
+ListaDesejos ||--o{ ListaDesejosProduto
+Encomenda ||--o{ Entrega
+Transportadora ||--o{ Entrega
+Cliente ||--o{ AvaliacaoLoja
+Cliente ||--o{ Notificacao
+CampanhaMarketing ||--o{ Notificacao
+CampanhaMarketing ||--o{ CampanhaCupao
+Cupao ||--o{ CampanhaCupao
+Encomenda ||--o{ CupaoEncomenda
+Cupao ||--o{ CupaoEncomenda
+Produto ||--o{ ProdutoTag
+Encomenda ||--o{ Devolucao
+Cliente ||--o{ Favorito
+Produto ||--o{ Favorito
+
+' ==== Relações N:N via tabelas de junção ====
+Produto ||--o{ ProdutoPromocao
+Promocao ||--o{ ProdutoPromocao
+
+Cupao ||--o{ CupaoEncomenda
+Encomenda ||--o{ CupaoEncomenda
+
+Cliente ||--o{ Favorito
+Produto ||--o{ Favorito
+
+@enduml

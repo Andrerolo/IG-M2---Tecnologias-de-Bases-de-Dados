@@ -1,0 +1,157 @@
+@startuml
+title Sistema Hospitalar - UML MR Profissional (Reorganizado)
+
+' ==== Entidades principais ====
+entity "Paciente" as Paciente {
+  *idPaciente : INT
+  nome : VARCHAR(100)
+  dataNascimento : DATE
+  nif : VARCHAR(20)
+  contactoEmergencia : VARCHAR(50)
+  historicoMedico : TEXT
+}
+
+entity "Medico" as Medico {
+  *idMedico : INT
+  nome : VARCHAR(100)
+  crm : VARCHAR(20)
+  idEspecialidade : INT
+}
+
+entity "Especialidade" as Especialidade {
+  *idEspecialidade : INT
+  nome : VARCHAR(50)
+}
+
+entity "Enfermeiro" as Enfermeiro {
+  *idEnfermeiro : INT
+  nome : VARCHAR(100)
+  turno : VARCHAR(20)
+}
+
+entity "Consulta" as Consulta {
+  *idConsulta : INT
+  dataHora : DATETIME
+  diagnostico : TEXT
+  prescricao : TEXT
+  idPaciente : INT
+  idMedico : INT
+}
+
+entity "Internamento" as Internamento {
+  *idInternamento : INT
+  dataEntrada : DATETIME
+  dataSaida : DATETIME
+  idPaciente : INT
+  idEnfermaria : INT
+}
+
+entity "Enfermaria" as Enfermaria {
+  *idEnfermaria : INT
+  nome : VARCHAR(50)
+  lotacao : INT
+}
+
+entity "Tratamento" as Tratamento {
+  *idTratamento : INT
+  descricao : TEXT
+  custo : DECIMAL(10,2)
+}
+
+entity "Equipamento" as Equipamento {
+  *idEquipamento : INT
+  nome : VARCHAR(50)
+  tipo : VARCHAR(50)
+  estado : VARCHAR(20)
+}
+
+entity "Laboratorio" as Laboratorio {
+  *idLab : INT
+  nome : VARCHAR(50)
+  localizacao : VARCHAR(100)
+}
+
+entity "ExameLaboratorial" as ExameLaboratorial {
+  *idExame : INT
+  tipoExame : VARCHAR(50)
+  resultado : TEXT
+  dataHora : DATETIME
+  idPaciente : INT
+  idLab : INT
+}
+
+entity "Medicamento" as Medicamento {
+  *idMedicamento : INT
+  nome : VARCHAR(50)
+  dose : VARCHAR(20)
+  viaAdministracao : VARCHAR(20)
+}
+
+entity "PrescricaoMedicamento" as PrescricaoMedicamento {
+  *idPrescricao : INT
+  quantidade : INT
+  frequencia : VARCHAR(50)
+  idConsulta : INT
+  idMedicamento : INT
+}
+
+entity "SeguroSaude" as SeguroSaude {
+  *idSeguro : INT
+  nomeSeguradora : VARCHAR(50)
+  numeroPoliza : VARCHAR(50)
+  cobertura : TEXT
+}
+
+entity "Pagamento" as Pagamento {
+  *idPagamento : INT
+  valor : DECIMAL(10,2)
+  dataPagamento : DATETIME
+  idPaciente : INT
+  idTratamento : INT
+}
+
+' ==== Tabelas de junção N:N (com ID próprio + FKs) ====
+entity "SupervisaoInternamento" as SupervisaoInternamento {
+  *idSupervisao : INT
+  idEnfermeiro : INT
+  idInternamento : INT
+}
+
+entity "TratamentoEquipamento" as TratamentoEquipamento {
+  *idRelacao : INT
+  idTratamento : INT
+  idEquipamento : INT
+}
+
+entity "PacienteSeguro" as PacienteSeguro {
+  *idPacienteSeguro : INT
+  idPaciente : INT
+  idSeguro : INT
+  dataInicio : DATE
+  dataFim : DATE
+}
+
+' ==== Relações 1:N / N:1 ====
+Paciente ||--o{ Consulta
+Medico ||--o{ Consulta
+Medico }o--|| Especialidade
+Paciente ||--o{ Internamento
+Enfermaria ||--o{ Internamento
+Consulta ||--o{ PrescricaoMedicamento
+Medicamento ||--o{ PrescricaoMedicamento
+Paciente ||--o{ ExameLaboratorial
+Laboratorio ||--o{ ExameLaboratorial
+Paciente ||--o{ Pagamento
+Tratamento ||--o{ Pagamento
+
+' ==== Relações N:N ====
+Enfermeiro ||--o{ SupervisaoInternamento
+Internamento ||--o{ SupervisaoInternamento
+
+Tratamento ||--o{ TratamentoEquipamento
+Equipamento ||--o{ TratamentoEquipamento
+
+Paciente ||--o{ PacienteSeguro
+SeguroSaude ||--o{ PacienteSeguro
+
+@enduml

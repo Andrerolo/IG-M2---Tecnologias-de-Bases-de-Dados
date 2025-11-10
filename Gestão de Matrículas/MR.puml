@@ -1,0 +1,147 @@
+@startuml
+title Sistema de Gestão de Matrículas - UML MR Realista e Completa
+
+' ==== Entidades principais ====
+entity "Aluno" as Aluno {
+  *idAluno : INT
+  nome : VARCHAR(100)
+  dataNascimento : DATE
+  nif : VARCHAR(20)
+  email : VARCHAR(100)
+  telefone : VARCHAR(20)
+}
+
+entity "Curso" as Curso {
+  *idCurso : INT
+  nome : VARCHAR(100)
+  duracaoSemestres : INT
+  grau : VARCHAR(50)
+}
+
+entity "Departamento" as Departamento {
+  *idDepartamento : INT
+  nome : VARCHAR(100)
+  localizacao : VARCHAR(50)
+}
+
+entity "Docente" as Docente {
+  *idDocente : INT
+  nome : VARCHAR(100)
+  cargo : VARCHAR(50)
+  idDepartamento : INT
+}
+
+entity "Disciplina" as Disciplina {
+  *idDisciplina : INT
+  nome : VARCHAR(100)
+  creditos : INT
+  idCurso : INT
+}
+
+entity "Modulo" as Modulo {
+  *idModulo : INT
+  nome : VARCHAR(100)
+  cargaHoraria : INT
+  idDisciplina : INT
+  idDocente : INT
+}
+
+entity "Turma" as Turma {
+  *idTurma : INT
+  semestre : VARCHAR(10)
+  anoLetivo : VARCHAR(20)
+  idModulo : INT
+}
+
+entity "InscricaoDisciplina" as InscricaoDisciplina {
+  *idInscricao : INT
+  idAluno : INT
+  idDisciplina : INT
+  dataInscricao : DATE
+  estado : VARCHAR(20)
+}
+
+entity "Avaliacao" as Avaliacao {
+  *idAvaliacao : INT
+  tipo : VARCHAR(50)
+  data : DATE
+  peso : DECIMAL(5,2)
+  idModulo : INT
+}
+
+entity "Nota" as Nota {
+  *idNota : INT
+  valor : DECIMAL(5,2)
+  idAvaliacao : INT
+  idAluno : INT
+}
+
+entity "HistoricoAcademico" as HistoricoAcademico {
+  *idHistorico : INT
+  idAluno : INT
+  idCurso : INT
+  anoConclusao : VARCHAR(20)
+  grauObtido : VARCHAR(50)
+}
+
+entity "Biblioteca" as Biblioteca {
+  *idBiblioteca : INT
+  nome : VARCHAR(100)
+  localizacao : VARCHAR(50)
+}
+
+entity "Livro" as Livro {
+  *idLivro : INT
+  titulo : VARCHAR(100)
+  autor : VARCHAR(100)
+  isbn : VARCHAR(20)
+  idBiblioteca : INT
+}
+
+entity "EmprestimoLivro" as EmprestimoLivro {
+  *idEmprestimo : INT
+  dataEmprestimo : DATE
+  dataDevolucao : DATE
+  idAluno : INT
+  idLivro : INT
+}
+
+entity "Pagamento" as Pagamento {
+  *idPagamento : INT
+  valor : DECIMAL(10,2)
+  dataPagamento : DATE
+  idAluno : INT
+  idCurso : INT
+}
+
+entity "DisciplinaPreRequisito" as DisciplinaPreRequisito {
+  *idRelacao : INT
+  idDisciplina : INT
+  idPreRequisito : INT
+}
+
+' ==== Relações 1:N / N:1 ====
+Departamento ||--o{ Docente
+Curso ||--o{ Disciplina
+Disciplina ||--o{ Modulo
+Docente ||--o{ Modulo
+Modulo ||--o{ Turma
+Turma ||--o{ Avaliacao
+Avaliacao ||--o{ Nota
+Aluno ||--o{ Nota
+Aluno ||--o{ HistoricoAcademico
+Curso ||--o{ HistoricoAcademico
+Biblioteca ||--o{ Livro
+Aluno ||--o{ EmprestimoLivro
+Livro ||--o{ EmprestimoLivro
+Aluno ||--o{ Pagamento
+Curso ||--o{ Pagamento
+
+' ==== Relações N:N via tabela de junção ====
+Aluno ||--o{ InscricaoDisciplina
+Disciplina ||--o{ InscricaoDisciplina
+
+Disciplina ||--o{ DisciplinaPreRequisito
+Disciplina ||--o{ DisciplinaPreRequisito
+
+@enduml
